@@ -24,6 +24,10 @@ label {
   padding: 15px;
 }
 
+.highlight {
+  background-color: rgb(121, 3, 81);
+}
+
 .no-suggestions {
   color: #999;
   padding: 0.5rem;

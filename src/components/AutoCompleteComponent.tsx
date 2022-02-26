@@ -22,13 +22,25 @@ const AutoCompleteComponent: React.FC = ():JSX.Element => {
     })
   }
 
-  const onAutoComplete = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const filterNames = async (userInput: string): Promise<Name[] | []> => {
+      return new Promise((resolve, reject) => {
+          const filteredNames: Name[] | [] = names.filter(
+            (name: string) =>
+              name.toLowerCase().indexOf(userInput.toLowerCase()) > -1
+          );
+          if (filteredNames) {
+            resolve(filteredNames)
+          }
+          reject(new Error('Unable to filter the user names'))
+      
+      })
+  }
+
+  const onAutoComplete = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const userInput = e.target.value;
 
-    const filteredNames: string[] | [] = names.filter(
-      (name: string) =>
-        name.toLowerCase().indexOf(userInput.toLowerCase()) > -1
-    );
+
+    const filteredNames = await filterNames(userInput)
 
     setInputValue(userInput);
     setFilteredNames(filteredNames);
@@ -80,7 +92,15 @@ const AutoCompleteComponent: React.FC = ():JSX.Element => {
         onChange={onAutoComplete} 
         onKeyDown={onKeyDown}
         />
-        { showNames && inputValue && <NamesListComponent filteredNames={filteredNames} activeNameIndex={activeNameIndex} onSelect={onSelect}/>}
+        { showNames 
+        && inputValue 
+        && <NamesListComponent 
+            filteredNames={filteredNames} 
+            activeNameIndex={activeNameIndex} 
+            onSelect={onSelect}
+            inputValue={inputValue}
+            />
+        }
       
       </div>
   );
